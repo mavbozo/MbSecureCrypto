@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "MbSecureCrypto"
-  spec.version      = "0.0.1"
+  spec.version      = "0.1.0"
   spec.summary      = "A secure cryptography library for iOS and macOS"
 
   # This description is used to generate tags and improve search results.
@@ -68,8 +68,8 @@ DESC
   # spec.platform     = :ios, "5.0"
 
   #  When using multiple platforms
-  spec.ios.deployment_target = "^15.6"
-  spec.osx.deployment_target = "^12.4"
+  spec.ios.deployment_target = "15.6"
+  spec.osx.deployment_target = "12.4"
   # spec.watchos.deployment_target = "2.0"
   # spec.tvos.deployment_target = "9.0"
   # spec.visionos.deployment_target = "1.0"
