@@ -2,6 +2,12 @@
 
 A secure cryptography library for iOS and macOS that provides cryptographically secure random number generation with multiple encoding options.
 
+## Requirements
+
+- iOS 15.6+ / macOS 12.4+
+- Xcode 13+
+- Objective-C or Swift projects
+
 ## Changelog
 
 ### [0.2.0] - 2024-11-02
@@ -118,7 +124,7 @@ do {
 
 ## Requirements
 
-- iOS 12.0+ / macOS 10.14+
+- iOS 15.6+ / macOS 12.4+
 - Xcode 13+
 - Objective-C or Swift projects
 
