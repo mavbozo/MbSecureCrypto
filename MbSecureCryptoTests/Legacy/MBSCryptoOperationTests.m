@@ -6,7 +6,11 @@
 //
 
 #import <XCTest/XCTest.h>
-#import <MbSecureCrypto/MbSecureCrypto.h>
+#import "MbSecureCrypto.h"
+
+// Silence deprecation warnings for testing legacy code
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 @interface MBSCryptoOperationTests : XCTestCase
 @end

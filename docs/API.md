@@ -2,163 +2,239 @@
 
 ## Table of Contents
 - [Overview](#overview)
-- [MBSCryptoOperation Class](#mbscryptooperation-class)
-  - [Random Bytes Generation](#random-bytes-generation)
-  - [Random String Generation](#random-string-generation)
+- [Random Number Generation](#random-number-generation)
+  - [MBSRandom Class](#mbsrandom-class)
+- [Encryption](#encryption)
+  - [MBSCipher Class](#mbscipher-class)
 - [Error Handling](#error-handling)
 - [Best Practices](#best-practices)
 - [Version History](#version-history)
 
 ## Overview
 
-MbSecureCrypto provides cryptographically secure random number generation capabilities for iOS and macOS applications. All methods are class methods on the `MBSCryptoOperation` class and are thread-safe.
+MbSecureCrypto provides cryptographically secure random number generation and encryption capabilities for iOS and macOS applications. The library is designed to be easy to use while maintaining strong security guarantees.
 
-## MBSCryptoOperation Class
+## Random Number Generation
 
-### Random Bytes Generation
+### MBSRandom Class
 
-#### `+ (nullable NSData *)randomBytes:(NSInteger)numBytes error:(NSError **)error`
+#### `+ (nullable NSData *)generateBytes:(NSInteger)byteCount error:(NSError **)error`
 
-Generates a specified number of cryptographically secure random bytes.
+Generates cryptographically secure random bytes.
 
 **Parameters:**
-- `numBytes`: The number of random bytes to generate. Must be greater than 0.
-- `error`: On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information. You may specify nil for this parameter if you do not want the error information.
+- `byteCount`: Number of random bytes to generate (1 to 1MB)
+- `error`: Error object populated on failure
 
 **Returns:**
-- An `NSData` object containing the requested number of random bytes, or nil if an error occurred.
+- NSData containing random bytes, or nil on error
 
-**Example Usage:**
+**Example:**
 ```objectivec
 NSError *error = nil;
-NSData *randomData = [MBSCryptoOperation randomBytes:32 error:&error];
+NSData *randomData = [MBSRandom generateBytes:32 error:&error];
 if (randomData) {
     // Use the random data
-} else {
-    NSLog(@"Error generating random bytes: %@", error);
 }
 ```
 
-#### `+ (nullable NSString *)randomBytesAsHex:(NSInteger)numBytes error:(NSError **)error`
+#### `+ (nullable NSString *)generateBytesAsHex:(NSInteger)byteCount error:(NSError **)error`
 
-Generates random bytes and returns them as a hexadecimal string.
+Generates random bytes as a hexadecimal string.
 
 **Parameters:**
-- `numBytes`: The number of random bytes to generate. Must be greater than 0.
-- `error`: On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information.
+- `byteCount`: Number of random bytes (1 to 1MB)
+- `error`: Error object populated on failure
 
 **Returns:**
-- A string of length 2*numBytes containing the hexadecimal representation of the random bytes, or nil if an error occurred.
+- Hexadecimal string (length will be 2*byteCount)
 
-**Example Usage:**
-```objectivec
-NSError *error = nil;
-NSString *hexString = [MBSCryptoOperation randomBytesAsHex:16 error:&error];
-if (hexString) {
-    // hexString will be 32 characters long (16 bytes * 2)
-    NSLog(@"Random hex string: %@", hexString);
-}
-```
+#### `+ (nullable NSString *)generateBytesAsBase64:(NSInteger)byteCount error:(NSError **)error`
 
-#### `+ (nullable NSString *)randomBytesAsBase64:(NSInteger)numBytes error:(NSError **)error`
-
-Generates random bytes and returns them encoded as a base64 string.
+Generates random bytes as a base64 string.
 
 **Parameters:**
-- `numBytes`: The number of random bytes to generate. Must be greater than 0.
-- `error`: On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information.
+- `byteCount`: Number of random bytes (1 to 1MB)
+- `error`: Error object populated on failure
 
 **Returns:**
-- A base64 encoded string representing the random bytes, or nil if an error occurred.
+- Base64 encoded string
 
-**Example Usage:**
-```objectivec
-NSError *error = nil;
-NSString *base64String = [MBSCryptoOperation randomBytesAsBase64:24 error:&error];
-if (base64String) {
-    NSLog(@"Random base64 string: %@", base64String);
-}
-```
+## Encryption
 
-### Random String Generation
+### MBSCipher Class
 
-#### `+ (nullable NSString *)randomStringWithLength:(NSInteger)length error:(NSError **)error`
+#### String Encryption
 
-> ⚠️ Deprecated in version 0.2.0. Will be removed in version 1.0.0.
-> Use `randomBytesAsHex:error:` or `randomBytesAsBase64:error:` instead.
+##### `+ (nullable NSString *)encryptString:(NSString *)string withAlgorithm:(MBSCipherAlgorithm)algorithm withKey:(NSData *)key error:(NSError **)error`
 
-Generates a random string of specified length.
+Encrypts a string using the specified algorithm.
 
 **Parameters:**
-- `length`: The desired length of the random string. Must be greater than 0.
-- `error`: On input, a pointer to an error object. If an error occurs, this pointer is set to an actual error object containing the error information.
+- `string`: String to encrypt
+- `algorithm`: Encryption algorithm (currently only AES-GCM supported)
+- `key`: 32-byte key for AES-256
+- `error`: Error object populated on failure
 
 **Returns:**
-- A string of the specified length containing random characters, or nil if an error occurred.
+- Base64 encoded encrypted string, or nil on error
 
-**Example Usage:**
-```objectivec
-NSError *error = nil;
-NSString *randomString = [MBSCryptoOperation randomStringWithLength:16 error:&error];
-if (randomString) {
-    NSLog(@"Random string: %@", randomString);
-}
+##### `+ (nullable NSString *)decryptString:(NSString *)encryptedString withAlgorithm:(MBSCipherAlgorithm)algorithm withKey:(NSData *)key error:(NSError **)error`
+
+Decrypts an encrypted string.
+
+**Parameters:**
+- `encryptedString`: Base64 encoded encrypted string
+- `algorithm`: Algorithm used for encryption
+- `key`: Original encryption key
+- `error`: Error object populated on failure
+
+**Returns:**
+- Decrypted string, or nil on error
+
+#### Data Encryption
+
+##### `+ (nullable NSData *)encryptData:(NSData *)data withAlgorithm:(MBSCipherAlgorithm)algorithm withKey:(NSData *)key error:(NSError **)error`
+
+Encrypts data using the specified algorithm.
+
+**Parameters:**
+- `data`: Data to encrypt
+- `algorithm`: Encryption algorithm
+- `key`: 32-byte key
+- `error`: Error object populated on failure
+
+**Returns:**
+- Encrypted data including nonce and tag, or nil on error
+
+##### `+ (nullable NSData *)decryptData:(NSData *)encryptedData withAlgorithm:(MBSCipherAlgorithm)algorithm withKey:(NSData *)key error:(NSError **)error`
+
+Decrypts encrypted data.
+
+**Parameters:**
+- `encryptedData`: Data to decrypt (must include nonce and tag)
+- `algorithm`: Algorithm used for encryption
+- `key`: Original encryption key
+- `error`: Error object populated on failure
+
+**Returns:**
+- Decrypted data, or nil on error
+
+#### File Encryption
+
+##### `+ (BOOL)encryptFile:(NSURL *)sourceURL toOutput:(NSURL *)destinationURL withAlgorithm:(MBSCipherAlgorithm)algorithm withKey:(NSData *)key error:(NSError **)error`
+
+Encrypts a file.
+
+**Parameters:**
+- `sourceURL`: Source file URL
+- `destinationURL`: Destination file URL
+- `algorithm`: Encryption algorithm
+- `key`: 32-byte key
+- `error`: Error object populated on failure
+
+**Returns:**
+- YES if successful, NO on error
+
+**Notes:**
+- Maximum file size: 10MB
+- Files are processed in memory
+
+##### `+ (BOOL)decryptFile:(NSURL *)sourceURL toOutput:(NSURL *)destinationURL withAlgorithm:(MBSCipherAlgorithm)algorithm withKey:(NSData *)key error:(NSError **)error`
+
+Decrypts an encrypted file.
+
+**Parameters:**
+- `sourceURL`: Encrypted file URL
+- `destinationURL`: Output file URL
+- `algorithm`: Algorithm used for encryption
+- `key`: Original encryption key
+- `error`: Error object populated on failure
+
+**Returns:**
+- YES if successful, NO on error
+
+### AES-GCM Implementation Details
+
+#### Nonce and Tag Handling
+
+The `MBSCipher` class automatically handles nonces and authentication tags:
+
+- **Nonce Generation**: Each encryption operation generates a fresh 12-byte nonce using `MBSRandom`
+- **Data Format**: Encrypted output is structured as `[nonce][ciphertext][tag]`
+- **Sizing**:
+  - Nonce: 12 bytes
+  - Tag: 16 bytes
+  - Minimum total size: 28 bytes (even for empty input)
+  
+#### Format Details
+```objc
+// Encryption result structure
+typedef struct {
+    uint8_t nonce[12];     // Random nonce
+    uint8_t ciphertext[];  // Encrypted data (variable length)
+    uint8_t tag[16];       // Authentication tag
+} MBSEncryptedData;
 ```
+
+The decryption functions automatically extract and validate these components, ensuring authenticated decryption.
 
 ## Error Handling
 
-All methods in MbSecureCrypto use the following error domain and codes:
-
-**Error Domain:** `com.mbsecurecrypto`
-
-**Error Codes:**
-- `100`: Invalid input (number of bytes must be greater than 0)
-- `101`: Random number generation failed
-- `102`: Memory allocation failed
-
-Example error handling:
+### Random Operation Errors (MBSRandomError)
 ```objectivec
-NSError *error = nil;
-NSData *randomData = [MBSCryptoOperation randomBytes:32 error:&error];
-if (error) {
-    switch (error.code) {
-        case 100:
-            NSLog(@"Invalid input provided");
-            break;
-        case 101:
-            NSLog(@"Failed to generate random bytes");
-            break;
-        case 102:
-            NSLog(@"Memory allocation failed");
-            break;
-        default:
-            NSLog(@"Unknown error occurred");
-            break;
-    }
-}
+typedef NS_ERROR_ENUM(MBSErrorDomain, MBSRandomError) {
+    MBSRandomErrorInvalidByteCount = 100,
+    MBSRandomErrorGenerationFailed = 101,
+    MBSRandomErrorBufferAllocation = 102
+};
+```
+
+### Cipher Operation Errors (MBSCipherError)
+```objectivec
+typedef NS_ERROR_ENUM(MBSErrorDomain, MBSCipherError) {
+    MBSCipherErrorInvalidKey = 200,
+    MBSCipherErrorInvalidInput = 202,
+    MBSCipherErrorEncryptionFailed = 210,
+    MBSCipherErrorDecryptionFailed = 211,
+    MBSCipherErrorFileTooLarge = 221
+};
 ```
 
 ## Best Practices
 
-1. **Error Handling**: Always check for errors when calling these methods. The error parameter provides detailed information about what went wrong.
+1. **Key Management**
+   - Generate keys using `MBSRandom generateBytes:error:`
+   - Store keys securely in Keychain
+   - Use unique keys for each encryption operation
+   - Implement proper key rotation
 
-2. **Memory Management**: When working with sensitive random data, zero out the memory after use:
-```objectivec
-NSMutableData *sensitiveData = [[MBSCryptoOperation randomBytes:32 error:&error] mutableCopy];
-// Use sensitiveData
-[sensitiveData resetBytesInRange:NSMakeRange(0, sensitiveData.length)];
-```
+2. **Memory Security**
+   - Zero sensitive data after use
+   - Use autoreleasepool for deterministic cleanup
+   - Avoid logging sensitive information
 
-3. **Thread Safety**: All methods are thread-safe and can be called from any thread.
+3. **Error Handling**
+   - Always check error return values
+   - Handle all error cases appropriately
+   - Avoid exposing sensitive information in errors
+
+4. **File Operations**
+   - Respect the 10MB file size limit
+   - Use atomic file operations
+   - Clean up temporary files
 
 ## Version History
 
+### Version 0.3.0
+- Added encryption capabilities
+- Added MBSRandom class
+- Added comprehensive error handling
+- Deprecated MBSCryptoOperation
+
 ### Version 0.2.0
-- Added `randomBytes:error:`
-- Added `randomBytesAsHex:error:`
-- Added `randomBytesAsBase64:error:`
-- Deprecated `randomStringWithLength:error:`
+- Added random bytes generation methods
+- Added hex and base64 encoding options
 
 ### Version 0.1.0
 - Initial release
-- Added `randomStringWithLength:error:`

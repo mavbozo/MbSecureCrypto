@@ -14,4 +14,12 @@ FOUNDATION_EXPORT double MbSecureCryptoVersionNumber;
 FOUNDATION_EXPORT const unsigned char MbSecureCryptoVersionString[];
 
 // Public headers
-#import <MbSecureCrypto/MBSCryptoOperation.h>
+#pragma message "MBSCryptoOperation.h is deprecated. Use MBSRandom.h instead."
+#import "MBSCryptoOperation.h"
+
+#import "MBSRandom.h"
+
+#import "MBSCipherTypes.h"
+#import "MBSCipher.h"
+
+#import "MBSError.h"

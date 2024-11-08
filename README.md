@@ -1,6 +1,6 @@
 # MbSecureCrypto
 
-A secure cryptography library for iOS and macOS that provides cryptographically secure random number generation with multiple encoding options.
+A secure cryptography library for iOS and macOS that provides cryptographically secure random number generation and encryption capabilities.
 
 ## Requirements
 
@@ -8,31 +8,12 @@ A secure cryptography library for iOS and macOS that provides cryptographically 
 - Xcode 13+
 - Objective-C or Swift projects
 
-## Changelog
-
-### [0.2.0] - 2024-11-02
-#### Added
-- `randomBytes:error:` - Generate random bytes as NSData
-- `randomBytesAsHex:error:` - Generate random bytes as hexadecimal string
-- `randomBytesAsBase64:error:` - Generate random bytes as base64 string
-
-#### Changed
-- Improved error handling with specific error codes
-- Enhanced documentation
-
-#### Deprecated
-- `randomStringWithLength:error:` - Will be removed in v1.0.0. Use `randomBytesAsHex:error:` or `randomBytesAsBase64:error:` instead
-
-### [0.1.0] - 2024-10-29
-#### Added
-- Initial release
-- `randomStringWithLength:error:` for generating random strings
-
 ## Features
 
 - 🔒 Cryptographically secure random number generation using Apple's Security framework
+- 🔐 AES-GCM encryption for strings, data, and files
 - 📦 Multiple output formats: raw bytes, hexadecimal, and base64
-- ⚡️ High-performance implementation using Apple's native APIs
+- ⚡️ High-performance implementation using Apple's CryptoKit
 - 🛡️ Side-channel attack protection
 - ✅ Extensive test coverage
 - 📱 iOS and macOS support
@@ -44,7 +25,7 @@ A secure cryptography library for iOS and macOS that provides cryptographically 
 Add the following line to your Podfile:
 
 ```ruby
-pod 'MbSecureCrypto', '~> 0.2.0'
+pod 'MbSecureCrypto', '~> 0.3.0'
 ```
 
 ### Swift Package Manager
@@ -53,88 +34,162 @@ Add the following dependency to your Package.swift:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/mavbozo/MbSecureCrypto.git", from: "0.2.0")
+    .package(url: "https://github.com/mavbozo/MbSecureCrypto.git", from: "0.3.0")
 ]
-```
-
-## Migration Guide
-
-### Upgrading from 0.1.0 to 0.2.0
-
-If you were using `randomStringWithLength:error:`, you should migrate to one of the new methods:
-
-#### Before (0.1.0):
-```objectivec
-NSString *randomString = [MBSCryptoOperation randomStringWithLength:16 error:&error];
-```
-
-#### After (0.2.0):
-```objectivec
-// For hex-encoded string (will be twice the length of the byte count)
-NSString *hexString = [MBSCryptoOperation randomBytesAsHex:8 error:&error];  // Returns 16 characters
-
-// For base64-encoded string
-NSString *base64String = [MBSCryptoOperation randomBytesAsBase64:12 error:&error];
 ```
 
 ## Usage
 
-### Objective-C
+### Random Number Generation
 
+#### Objective-C
 ```objectivec
 #import <MbSecureCrypto/MbSecureCrypto.h>
 
 // Generate 32 random bytes
 NSError *error = nil;
-NSData *randomData = [MBSCryptoOperation randomBytes:32 error:&error];
+NSData *randomData = [MBSRandom generateBytes:32 error:&error];
 
 // Get random bytes as hex string
-NSString *hexString = [MBSCryptoOperation randomBytesAsHex:32 error:&error];
+NSString *hexString = [MBSRandom generateBytesAsHex:32 error:&error];
 
 // Get random bytes as base64 string
-NSString *base64String = [MBSCryptoOperation randomBytesAsBase64:32 error:&error];
+NSString *base64String = [MBSRandom generateBytesAsBase64:32 error:&error];
 ```
 
-### Swift
-
+#### Swift
 ```swift
 import MbSecureCrypto
 
 do {
     // Generate 32 random bytes
-    let randomData = try MBSCryptoOperation.randomBytes(32)
+    let randomData = try MBSRandom.generateBytes(32)
     
     // Get random bytes as hex string
-    let hexString = try MBSCryptoOperation.randomBytesAsHex(32)
+    let hexString = try MBSRandom.generateBytesAsHex(32)
     
     // Get random bytes as base64 string
-    let base64String = try MBSCryptoOperation.randomBytesAsBase64(32)
+    let base64String = try MBSRandom.generateBytesAsBase64(32)
 } catch {
-    print("Cryptographic operation failed: \(error)")
+    print("Operation failed: \(error)")
 }
 ```
 
-## Security Considerations
+### Encryption
 
-- Uses `SecRandomCopyBytes` from Apple's Security framework for cryptographically secure random number generation
-- Implements proper error handling and validation
-- Ensures secure memory handling for sensitive data
-- Protected against timing attacks through constant-time operations
-- Zero-fills sensitive memory after use
+#### String Encryption
+```objectivec
+// Generate a random 32-byte key
+NSError *error = nil;
+NSData *key = [MBSRandom generateBytes:32 error:&error];
 
-## Requirements
+// Encrypt a string
+NSString *encrypted = [MBSCipher encryptString:@"Secret message" 
+                                 withAlgorithm:MBSCipherAlgorithmAESGCM 
+                                       withKey:key 
+                                         error:&error];
 
-- iOS 15.6+ / macOS 12.4+
-- Xcode 13+
-- Objective-C or Swift projects
+// Decrypt the string
+NSString *decrypted = [MBSCipher decryptString:encrypted
+                                 withAlgorithm:MBSCipherAlgorithmAESGCM
+                                       withKey:key
+                                         error:&error];
+```
+
+#### File Encryption
+```objectivec
+NSURL *sourceURL = [NSURL fileURLWithPath:@"source.txt"];
+NSURL *encryptedURL = [NSURL fileURLWithPath:@"encrypted.bin"];
+
+NSError *error = nil;
+NSData *key = [MBSRandom generateBytes:32 error:&error];
+
+[MBSCipher encryptFile:sourceURL
+              toOutput:encryptedURL
+         withAlgorithm:MBSCipherAlgorithmAESGCM
+               withKey:key
+                 error:&error];
+```
+
+## Changelog
+
+### [0.3.0] - 2024-11-11
+#### Added
+- AES-GCM encryption support for strings, data, and files
+- Maximum file size limit (10MB) for encryption operations
+- Comprehensive error handling with specific error codes
+- Swift implementation using CryptoKit for core operations
+
+#### Changed
+- Renamed MBSCryptoOperation methods to MBSRandom
+- Improved memory handling for sensitive data
+- Enhanced error messaging and type safety
+
+#### Deprecated
+- All MBSCryptoOperation methods (use MBSRandom instead)
+
+### [0.2.0] - 2024-11-02
+- Added random bytes generation methods
+- Improved error handling
+
+### [0.1.0] - 2024-10-29
+- Initial release
+
+## Migration Guide
+
+### Upgrading to 0.3.0
+
+The `MBSCryptoOperation` class is deprecated. Migrate to the new `MBSRandom` class:
+
+```objectivec
+// Old
+NSData *randomData = [MBSCryptoOperation randomBytes:32 error:&error];
+
+// New
+NSData *randomData = [MBSRandom generateBytes:32 error:&error];
+```
 
 ## Error Handling
 
-The library uses structured error handling with specific error codes:
+The library uses structured error domains and codes:
 
-- 100: Invalid input (number of bytes must be greater than 0)
-- 101: Random number generation failed
-- 102: Memory allocation failed
+### Random Operations (MBSRandomError)
+- `MBSRandomErrorInvalidByteCount`: Invalid byte count requested
+- `MBSRandomErrorGenerationFailed`: Random number generation failed
+- `MBSRandomErrorBufferAllocation`: Memory allocation failed
+
+### Cipher Operations (MBSCipherError)
+- `MBSCipherErrorInvalidKey`: Invalid key size
+- `MBSCipherErrorInvalidInput`: Invalid input data
+- `MBSCipherErrorEncryptionFailed`: Encryption operation failed
+- `MBSCipherErrorDecryptionFailed`: Decryption operation failed
+- `MBSCipherErrorFileTooLarge`: File exceeds size limit (10MB)
+
+## Security Considerations
+
+- Uses CryptoKit for core cryptographic operations
+- Implements proper validation and error handling
+- Ensures secure memory handling for sensitive data
+- Protected against timing attacks
+- Zero-fills sensitive memory after use
+- Enforces appropriate key sizes and IV handling
+
+### AES-GCM Nonce Handling
+- Nonces are automatically generated using secure random generation
+- Each encryption operation uses a unique 12-byte nonce
+- Nonces are prepended to the ciphertext along with the authentication tag
+- Format: `[12-byte nonce][ciphertext][16-byte tag]`
+- Never reuse a key-nonce pair as this compromises security
+- Encrypted output includes everything needed for decryption
+
+Example complete ciphertext structure:
+```
+Base64(
+    12 bytes: Nonce
+    N bytes:  Ciphertext
+    16 bytes: Authentication Tag
+)
+```
 
 ## Contributing
 
@@ -144,12 +199,6 @@ The library uses structured error handling with specific error codes:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### Development Setup
-
-1. Clone the repository
-2. Open `MbSecureCrypto.xcodeproj` in Xcode
-3. Run the test suite to ensure everything is working
-
 ## License
 
 Copyright (c) 2024 Maverick Bozo
@@ -158,7 +207,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Security Disclosure
 
-If you discover any security-related issues, please email mavbozo@pm.com instead of using the issue tracker.
+If you discover any security-related issues, please email mavbozo@pm.me instead of using the issue tracker.
 
 ## Documentation
 

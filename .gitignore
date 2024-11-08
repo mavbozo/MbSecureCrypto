@@ -1,4 +1,9 @@
 # .gitignore
+
+# VS Code
+.vscode/
+*.code-workspace
+
 # Xcode
 .DS_Store
 xcuserdata/
@@ -27,3 +32,6 @@ Pods/
 
 # Build products
 build/
+
+# But keep shared Xcode schemes
+!*.xcodeproj/xcshareddata/
