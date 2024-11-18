@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		890E9AC22CE37D58004C665A /* MbSecureCrypto.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */; };
+		897BB0B32CEB291500770682 /* MbSecureCrypto.docc in Sources */ = {isa = PBXBuildFile; fileRef = 897BB0B22CEB291500770682 /* MbSecureCrypto.docc */; };
+		897BB0B42CEB291500770682 /* MbSecureCrypto.docc in Sources */ = {isa = PBXBuildFile; fileRef = 897BB0B22CEB291500770682 /* MbSecureCrypto.docc */; };
 		89F5900C2CE30DBB0001AACE /* libMbSecureCrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89F58F832CE307420001AACE /* libMbSecureCrypto.a */; };
 		89F590142CE30DEA0001AACE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89F590132CE30DEA0001AACE /* Security.framework */; };
 		89F590252CE3128B0001AACE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89F590132CE30DEA0001AACE /* Security.framework */; };
@@ -39,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = MbSecureCrypto.xcconfig; sourceTree = "<group>"; };
+		897BB0B22CEB291500770682 /* MbSecureCrypto.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = MbSecureCrypto.docc; sourceTree = "<group>"; };
 		89F58F832CE307420001AACE /* libMbSecureCrypto.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMbSecureCrypto.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F590082CE30DBB0001AACE /* MbSecureCryptoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MbSecureCryptoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F590132CE30DEA0001AACE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -105,6 +108,7 @@
 		89F58F7A2CE307420001AACE = {
 			isa = PBXGroup;
 			children = (
+				897BB0B22CEB291500770682 /* MbSecureCrypto.docc */,
 				89F590D72CE31F4D0001AACE /* MbSecureCrypto.xctestplan */,
 				89F58F852CE307420001AACE /* MbSecureCrypto */,
 				89F590092CE30DBB0001AACE /* MbSecureCryptoTests */,
@@ -264,6 +268,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				897BB0B42CEB291500770682 /* MbSecureCrypto.docc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				897BB0B32CEB291500770682 /* MbSecureCrypto.docc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +327,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DOCC_EXTRACT_SWIFT_INFO_FOR_OBJC_SYMBOLS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -383,6 +390,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DOCC_EXTRACT_SWIFT_INFO_FOR_OBJC_SYMBOLS = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -410,17 +418,22 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = 4V96VSFZKB;
+				DOCC_EXTRACT_OBJC_INFO_FOR_SWIFT_SYMBOLS = YES;
+				DOCC_EXTRACT_SWIFT_INFO_FOR_OBJC_SYMBOLS = YES;
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MODULEMAP_FILE = "";
+				OTHER_DOCC_FLAGS = "";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lswiftCore",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = NO;
+				RUN_DOCUMENTATION_COMPILER = YES;
 				SKIP_INSTALL = NO;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
@@ -440,17 +453,22 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = 4V96VSFZKB;
+				DOCC_EXTRACT_OBJC_INFO_FOR_SWIFT_SYMBOLS = YES;
+				DOCC_EXTRACT_SWIFT_INFO_FOR_OBJC_SYMBOLS = YES;
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MODULEMAP_FILE = "";
+				OTHER_DOCC_FLAGS = "";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lswiftCore",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = NO;
+				RUN_DOCUMENTATION_COMPILER = YES;
 				SKIP_INSTALL = NO;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;

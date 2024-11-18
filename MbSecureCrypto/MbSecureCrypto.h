@@ -5,6 +5,12 @@
 //  Created by Maverick Bozo on 29/10/24.
 //
 
+/*!
+ @framework MbSecureCrypto
+ @abstract A secure cryptography library YES!
+ @discussion Provides random number generation and encryption
+*/
+
 #import <Foundation/Foundation.h>
 
 //! Project version number

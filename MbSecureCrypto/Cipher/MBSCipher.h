@@ -12,6 +12,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// A class providing secure encryption and decryption capabilities using modern cryptographic algorithms.
+/// @discussion This class implements AES-GCM encryption with proper nonce handling and
+/// authenticated encryption features.
 @interface MBSCipher : NSObject
 
 /// Encrypts a string using the specified algorithm and key

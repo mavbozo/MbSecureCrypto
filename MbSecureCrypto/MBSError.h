@@ -8,6 +8,9 @@
 // MBSError.h
 #import <Foundation/Foundation.h>
 
+#ifndef MBSError_h
+#define MBSError_h
+
 NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXPORT NSString *const MBSErrorDomain;
@@ -41,3 +44,5 @@ typedef NS_ERROR_ENUM(MBSErrorDomain, MBSCipherError) {
 } API_AVAILABLE(macos(12.4), ios(15.6));
 
 NS_ASSUME_NONNULL_END
+
+#endif

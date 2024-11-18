@@ -4,8 +4,10 @@
 //
 //  Created by Maverick Bozo on 11/11/24.
 //
-
 #import <Foundation/Foundation.h>
+
+#ifndef MBSCipherTypes_h
+#define MBSCipherTypes_h
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -14,3 +16,5 @@ typedef NS_ENUM(NSInteger, MBSCipherAlgorithm) {
 } API_AVAILABLE(macos(12.4), ios(15.6));
 
 NS_ASSUME_NONNULL_END
+
+#endif
