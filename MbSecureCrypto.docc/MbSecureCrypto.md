@@ -1,10 +1,10 @@
 # ``MbSecureCrypto``
 
-A secure cryptography library for iOS and macOS. YES!!!
+A secure cryptography library for iOS and macOS.
 
 ## Overview
 
-Fufufaa!!! MbSecureCrypto provides cryptographically secure random number generation and encryption capabilities.
+MbSecureCrypto provides cryptographically secure random number generation and encryption capabilities.
 
 ## Topics
 
