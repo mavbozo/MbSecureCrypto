@@ -33,6 +33,20 @@ jobs:
             --hosting-base-path MbSecureCrypto \
             --output-path docs
 
+      - name: Create redirect index.html
+        run: |
+          cat > docs/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="refresh" content="0; url='documentation/mbsecurecrypto'" />
+            </head>
+            <body>
+              <p>Redirecting to <a href="documentation/mbsecurecrypto">documentation</a>...</p>
+            </body>
+          </html>
+          EOF
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
