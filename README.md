@@ -25,7 +25,7 @@ A secure cryptography library for iOS and macOS that provides cryptographically 
 Add the following line to your Podfile:
 
 ```ruby
-pod 'MbSecureCrypto', '~> 0.3.0'
+pod 'MbSecureCrypto', '~> 0.4.0'
 ```
 
 ### Swift Package Manager
@@ -34,9 +34,15 @@ Add the following dependency to your Package.swift:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/mavbozo/MbSecureCrypto.git", from: "0.3.0")
+    .package(url: "https://github.com/mavbozo/MbSecureCrypto.git", from: "0.4.0")
 ]
 ```
+
+## Documentation Website
+
+For detailed documentation, please see our [MBSecureCrypto Docs](https://mavbozo.github.io/MbSecureCrypto).
+
+Select **Objective-C** on the top right of the page to view the ObjectiveC code docs.
 
 ## Usage
 
@@ -240,6 +246,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you discover any security-related issues, please email mavbozo@pm.me instead of using the issue tracker.
 
-## Documentation
-
-For detailed API documentation, please see our [API Reference](docs/API.md).
