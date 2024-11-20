@@ -23,6 +23,18 @@
                        withAlgorithm:(MBSCipherAlgorithm)algorithm
                              withKey:(NSData *)key
                                error:(NSError **)error {
+    return [self encryptString:string
+                 withAlgorithm:algorithm
+                    withFormat:nil
+                       withKey:key
+                         error:error];
+}
+
++ (nullable NSString *)encryptString:(NSString *)string
+                       withAlgorithm:(MBSCipherAlgorithm)algorithm
+                          withFormat: (nullable NSNumber *)format
+                             withKey:(NSData *)key
+                               error:(NSError **)error {
     
     // Input validation
     if (!string) {  // Only check for nil, allow empty string
@@ -44,15 +56,31 @@
     }
     
     // Forward to bridge
+    // Default to V0 if format is nil
+    MBSCipherFormat actualFormat = format ? format.unsignedIntValue : MBSCipherFormatV0;
+    
     return [MBSCipherBridge encryptString:string
                                       key:key
                                 algorithm:algorithm
+                                   format:actualFormat
                                     error:error];
 }
 
-// Similarly in decryptString:
 + (nullable NSString *)decryptString:(NSString *)encryptedString
                        withAlgorithm:(MBSCipherAlgorithm)algorithm
+                             withKey:(NSData *)key
+                               error:(NSError **)error {
+    return [self decryptString:encryptedString
+                 withAlgorithm:algorithm
+                    withFormat:nil
+                       withKey:key
+                         error:error];
+    
+}
+
++ (nullable NSString *)decryptString:(NSString *)encryptedString
+                       withAlgorithm:(MBSCipherAlgorithm)algorithm
+                          withFormat: (nullable NSNumber *)format
                              withKey:(NSData *)key
                                error:(NSError **)error {
     
@@ -76,14 +104,31 @@
     }
     
     // Forward to bridge
+    // Default to V0 if format is nil
+    MBSCipherFormat actualFormat = format ? format.unsignedIntValue : MBSCipherFormatV0;
+    
+    
     return [MBSCipherBridge decryptString:encryptedString
                                       key:key
                                 algorithm:algorithm
+                                   format: actualFormat
                                     error:error];
 }
 
 + (nullable NSData *)encryptData:(NSData *)data
                    withAlgorithm:(MBSCipherAlgorithm)algorithm
+                         withKey:(NSData *)key
+                           error:(NSError **)error {
+    return [self encryptData:data
+               withAlgorithm:algorithm
+                  withFormat:nil
+                     withKey:key
+                       error:error];
+}
+
++ (nullable NSData *)encryptData:(NSData *)data
+                   withAlgorithm:(MBSCipherAlgorithm)algorithm
+                      withFormat: (nullable NSNumber *)format
                          withKey:(NSData *)key
                            error:(NSError **)error {
     
@@ -107,14 +152,30 @@
     }
     
     // Forward to bridge
+    MBSCipherFormat actualFormat = format ? format.unsignedIntValue : MBSCipherFormatV0;
+    
     return [MBSCipherBridge encryptData:data
                                     key:key
                               algorithm:algorithm
+                                 format: actualFormat
                                   error:error];
 }
 
 + (nullable NSData *)decryptData:(NSData *)encryptedData
                    withAlgorithm:(MBSCipherAlgorithm)algorithm
+
+                         withKey:(NSData *)key
+                           error:(NSError **)error {
+    return [self decryptData:encryptedData
+               withAlgorithm:algorithm
+                  withFormat:nil
+                     withKey:key
+                       error:error];
+}
+
++ (nullable NSData *)decryptData:(NSData *)encryptedData
+                   withAlgorithm:(MBSCipherAlgorithm)algorithm
+                      withFormat: (nullable NSNumber *)format
                          withKey:(NSData *)key
                            error:(NSError **)error {
     
@@ -138,16 +199,35 @@
     }
     
     // Forward to bridge
+    // Default to V0 if format is nil
+    MBSCipherFormat actualFormat = format ? format.unsignedIntValue : MBSCipherFormatV0;
+    
     return [MBSCipherBridge decryptData:encryptedData
                                     key:key
                               algorithm:algorithm
+                                 format:actualFormat
                                   error:error];
 }
-
 
 + (BOOL)encryptFile:(NSURL *)sourceURL
            toOutput:(NSURL *)destinationURL
       withAlgorithm:(MBSCipherAlgorithm)algorithm
+            withKey:(NSData *)key
+              error:(NSError **)error {
+    
+    return [self encryptFile:sourceURL
+                    toOutput:destinationURL
+               withAlgorithm:algorithm
+                  withFormat:nil
+                     withKey:key
+                       error:error];
+    
+}
+
++ (BOOL)encryptFile:(NSURL *)sourceURL
+           toOutput:(NSURL *)destinationURL
+      withAlgorithm:(MBSCipherAlgorithm)algorithm
+         withFormat: (nullable NSNumber *)format
             withKey:(NSData *)key
               error:(NSError **)error {
     
@@ -215,6 +295,7 @@
     NSError *encryptError = nil;
     NSData *encryptedData = [self encryptData:fileData
                                 withAlgorithm:algorithm
+                                   withFormat:format
                                       withKey:key
                                         error:&encryptError];
     if (!encryptedData) {
@@ -245,6 +326,21 @@
 + (BOOL)decryptFile:(NSURL *)sourceURL
            toOutput:(NSURL *)destinationURL
       withAlgorithm:(MBSCipherAlgorithm)algorithm
+
+            withKey:(NSData *)key
+              error:(NSError **)error {
+    return  [self decryptFile:sourceURL
+                     toOutput:destinationURL
+                withAlgorithm:algorithm
+                   withFormat:nil
+                      withKey:key
+                        error:error];
+}
+
++ (BOOL)decryptFile:(NSURL *)sourceURL
+           toOutput:(NSURL *)destinationURL
+      withAlgorithm:(MBSCipherAlgorithm)algorithm
+         withFormat: (nullable NSNumber *)format
             withKey:(NSData *)key
               error:(NSError **)error {
     
@@ -312,6 +408,7 @@
     NSError *decryptError = nil;
     NSData *decryptedData = [self decryptData:encryptedData
                                 withAlgorithm:algorithm
+                                   withFormat:format
                                       withKey:key
                                         error:&decryptError];
     if (!decryptedData) {

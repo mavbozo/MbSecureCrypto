@@ -42,6 +42,10 @@
 /* Begin PBXFileReference section */
 		890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = MbSecureCrypto.xcconfig; sourceTree = "<group>"; };
 		897BB0B22CEB291500770682 /* MbSecureCrypto.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = MbSecureCrypto.docc; sourceTree = "<group>"; };
+		897BB0F92CEB83C400770682 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		897BB0FC2CEB841200770682 /* version-040-release-plan.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "version-040-release-plan.md"; sourceTree = "<group>"; };
+		897BB0FE2CEB841200770682 /* API.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = API.md; sourceTree = "<group>"; };
+		897BB1002CEB848600770682 /* FORMAT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FORMAT.md; sourceTree = "<group>"; };
 		89F58F832CE307420001AACE /* libMbSecureCrypto.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMbSecureCrypto.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F590082CE30DBB0001AACE /* MbSecureCryptoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MbSecureCryptoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F590132CE30DEA0001AACE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -105,9 +109,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		897BB0FD2CEB841200770682 /* internal */ = {
+			isa = PBXGroup;
+			children = (
+				897BB0FC2CEB841200770682 /* version-040-release-plan.md */,
+			);
+			path = internal;
+			sourceTree = "<group>";
+		};
+		897BB0FF2CEB841200770682 /* docs */ = {
+			isa = PBXGroup;
+			children = (
+				897BB1002CEB848600770682 /* FORMAT.md */,
+				897BB0FD2CEB841200770682 /* internal */,
+				897BB0FE2CEB841200770682 /* API.md */,
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
 		89F58F7A2CE307420001AACE = {
 			isa = PBXGroup;
 			children = (
+				897BB0FF2CEB841200770682 /* docs */,
 				897BB0B22CEB291500770682 /* MbSecureCrypto.docc */,
 				89F590D72CE31F4D0001AACE /* MbSecureCrypto.xctestplan */,
 				89F58F852CE307420001AACE /* MbSecureCrypto */,
@@ -115,6 +138,7 @@
 				89F590122CE30DEA0001AACE /* Frameworks */,
 				89F58F842CE307420001AACE /* Products */,
 				890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */,
+				897BB0F92CEB83C400770682 /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -157,7 +181,6 @@
 				89F58F7F2CE307420001AACE /* Sources */,
 				89F58F802CE307420001AACE /* Frameworks */,
 				89F58F812CE307420001AACE /* CopyFiles */,
-				89A680C02CE349F1002F64D7 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -241,27 +264,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		89A680C02CE349F1002F64D7 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "
-";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		89F58F7F2CE307420001AACE /* Sources */ = {

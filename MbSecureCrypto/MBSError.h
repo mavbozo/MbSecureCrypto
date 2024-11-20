@@ -31,6 +31,10 @@ typedef NS_ERROR_ENUM(MBSErrorDomain, MBSCipherError) {
     MBSCipherErrorInvalidIV = 201,            // IV/nonce is invalid or wrong size
     MBSCipherErrorInvalidInput = 202,         // Input data is invalid or corrupted
     MBSCipherErrorUnsupportedAlgorithm = 203, // Requested algorithm is not supported
+    MBSCipherErrorUnsupportedFormat = 204,    // Unknown or unsupported format version
+    MBSCipherErrorFormatDetectionFailed = 205, // Failed to detect format version
+    MBSCipherErrorFormatMismatch = 206,       // Format version mismatch during decryption
+
     
     // Operation errors
     MBSCipherErrorEncryptionFailed = 210,     // Encryption operation failed

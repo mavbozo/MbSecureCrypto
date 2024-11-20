@@ -1,0 +1,37 @@
+# .github/workflows/deploy-docs.yml
+
+name: Generate and Deploy DocC
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Build DocC
+        run: |
+          xcodebuild docbuild \
+            -scheme MbSecureCrypto \
+            -destination 'platform=iOS Simulator,name=iPhone 14' \
+            -derivedDataPath build
+
+          $(xcrun --find docc) process-archive \
+            transform-for-static-hosting build/Build/Products/Debug-iphonesimulator/MbSecureCrypto.doccarchive \
+            --hosting-base-path MbSecureCrypto \
+            --output-path docs-website
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs-website
+          destination_dir: ./docs-website

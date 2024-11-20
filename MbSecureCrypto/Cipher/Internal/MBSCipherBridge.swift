@@ -10,10 +10,22 @@ import CryptoKit
 @objcMembers
 public class MBSCipherBridge: NSObject {
     
+    private static func encryptFormatV0(data: Data, key: SymmetricKey) throws -> Data {
+        let nonce = AES.GCM.Nonce()
+        let sealedBox = try AES.GCM.seal(data, using: key, nonce: nonce)
+        
+        var combined = Data()
+        combined.append(nonce.withUnsafeBytes { Data($0) })
+        combined.append(sealedBox.ciphertext)
+        combined.append(sealedBox.tag)
+        return combined
+    }
+    
     @objc
     public static func encryptString(_ string: String,
                                      key: Data,
                                      algorithm: MBSCipherAlgorithm,
+                                     format: MBSCipherFormat,
                                      error: UnsafeMutablePointer<NSError?>?) -> String? {
         do {
             guard let data = string.data(using: .utf8) else {
@@ -31,16 +43,19 @@ public class MBSCipherBridge: NSObject {
             }
             
             let symmetricKey = SymmetricKey(data: key)
-            let nonce = AES.GCM.Nonce()
-            let sealedBox = try AES.GCM.seal(data, using: symmetricKey, nonce: nonce)
+            var encryptedData: Data
             
-            // Combine nonce + ciphertext + tag
-            var combined = Data()
-            combined.append(nonce.withUnsafeBytes { Data($0) })
-            combined.append(sealedBox.ciphertext)
-            combined.append(sealedBox.tag)
+            // Use raw value 0 for V0 format
+            if format.rawValue == 0 {
+                encryptedData = try encryptFormatV0(data: data, key: symmetricKey)
+            } else {
+                error?.pointee = NSError(domain: MBSErrorDomain,
+                                         code: 204, // Unknown or unsupported format version
+                                         userInfo: [NSLocalizedDescriptionKey: "Unsupported format version"])
+                return nil
+            }
             
-            return combined.base64EncodedString()
+            return encryptedData.base64EncodedString()
             
         } catch let aError as NSError {
             if error != nil {
@@ -52,10 +67,30 @@ public class MBSCipherBridge: NSObject {
         }
     }
     
+    private static func decryptFormatV0(data: Data, key: SymmetricKey) throws -> Data {
+        guard data.count >= 28 else {
+            throw NSError(domain: MBSErrorDomain,
+                          code: 202, // MBSCipherErrorInvalidInput
+                          userInfo: [NSLocalizedDescriptionKey: "Encrypted data too short"])
+        }
+        
+        let nonceData = data.prefix(12)
+        let tagData = data.suffix(16)
+        let ciphertext = data.dropFirst(12).dropLast(16)
+        
+        let nonce = try AES.GCM.Nonce(data: nonceData)
+        let sealedBox = try AES.GCM.SealedBox(nonce: nonce,
+                                              ciphertext: ciphertext,
+                                              tag: tagData)
+        
+        return try AES.GCM.open(sealedBox, using: key)
+    }
+    
     @objc
     public static func decryptString(_ encryptedString: String,
                                      key: Data,
                                      algorithm: MBSCipherAlgorithm,
+                                     format: MBSCipherFormat,
                                      error: UnsafeMutablePointer<NSError?>?) -> String? {
         do {
             guard let combined = Data(base64Encoded: encryptedString) else {
@@ -81,24 +116,20 @@ public class MBSCipherBridge: NSObject {
                 return nil
             }
             
-            // Extract components
-            let nonceData = combined.prefix(12)  // AES-GCM nonce is 12 bytes
-            let tagData = combined.suffix(16)    // AES-GCM tag is 16 bytes
-            let ciphertext = combined.dropFirst(12).dropLast(16)  // Can be empty
-            
             let symmetricKey = SymmetricKey(data: key)
-            let nonce = try AES.GCM.Nonce(data: nonceData)
+            let decryptedData: Data
             
-            // Create sealed box
-            let sealedBox = try AES.GCM.SealedBox(nonce: nonce,
-                                                  ciphertext: ciphertext,
-                                                  tag: tagData)
+            if format.rawValue == 0 {
+                decryptedData = try decryptFormatV0(data: combined, key: symmetricKey)
+            } else {
+                error?.pointee = NSError(domain: MBSErrorDomain,
+                                         code: 204,
+                                         userInfo: [NSLocalizedDescriptionKey: "Unsupported format version"])
+                return nil
+            }
             
-            // Decrypt
-            let decryptedData = try AES.GCM.open(sealedBox, using: symmetricKey)
+            return String(data: decryptedData, encoding: .utf8) ?? ""
             
-            // For empty string, decryptedData will be empty but valid
-            return String(data: decryptedData, encoding: .utf8) ?? ""  // Return empty string for empty data
             
         } catch let aError as NSError {
             if error != nil {
@@ -114,6 +145,7 @@ public class MBSCipherBridge: NSObject {
     public static func encryptData(_ data: Data,
                                    key: Data,
                                    algorithm: MBSCipherAlgorithm,
+                                   format: MBSCipherFormat,
                                    error: UnsafeMutablePointer<NSError?>?) -> Data? {
         do {
             guard key.count == 32 else { // AES-256
@@ -124,16 +156,15 @@ public class MBSCipherBridge: NSObject {
             }
             
             let symmetricKey = SymmetricKey(data: key)
-            let nonce = AES.GCM.Nonce()
-            let sealedBox = try AES.GCM.seal(data, using: symmetricKey, nonce: nonce)
             
-            // Combine nonce + ciphertext + tag
-            var combined = Data()
-            combined.append(nonce.withUnsafeBytes { Data($0) })
-            combined.append(sealedBox.ciphertext)
-            combined.append(sealedBox.tag)
-            
-            return combined
+            if format.rawValue == 0 {
+                return try encryptFormatV0(data: data, key: symmetricKey)
+            } else {
+                error?.pointee = NSError(domain: MBSErrorDomain,
+                                         code: 204,
+                                         userInfo: [NSLocalizedDescriptionKey: "Unsupported format version"])
+                return nil
+            }
             
         } catch let aError as NSError {
             if error != nil {
@@ -149,6 +180,7 @@ public class MBSCipherBridge: NSObject {
     public static func decryptData(_ encryptedData: Data,
                                    key: Data,
                                    algorithm: MBSCipherAlgorithm,
+                                   format: MBSCipherFormat,
                                    error: UnsafeMutablePointer<NSError?>?) -> Data? {
         do {
             
@@ -167,23 +199,18 @@ public class MBSCipherBridge: NSObject {
                 return nil
             }
             
-            
-            
-            // Extract components
-            let nonceData = encryptedData.prefix(12)  // AES-GCM nonce is 12 bytes
-            let tagData = encryptedData.suffix(16)    // AES-GCM tag is 16 bytes
-            let ciphertext = encryptedData.dropFirst(12).dropLast(16)
-            
             let symmetricKey = SymmetricKey(data: key)
-            let nonce = try AES.GCM.Nonce(data: nonceData)
             
-            // Create sealed box
-            let sealedBox = try AES.GCM.SealedBox(nonce: nonce,
-                                                  ciphertext: ciphertext,
-                                                  tag: tagData)
+            if format.rawValue == 0 {
+                return try decryptFormatV0(data: encryptedData, key: symmetricKey)
+            } else {
+                error?.pointee = NSError(domain: MBSErrorDomain,
+                                         code: 204,
+                                         userInfo: [NSLocalizedDescriptionKey: "Unsupported format version"])
+                return nil
+            }
             
-            // Decrypt
-            return try AES.GCM.open(sealedBox, using: symmetricKey)
+            
             
         } catch let aError as NSError {
             if error != nil {
@@ -193,6 +220,42 @@ public class MBSCipherBridge: NSObject {
             }
             return nil
         }
+    }
+    
+    // Need to implement the legacy methods without format parameter
+    @objc
+    public static func encryptString(_ string: String,
+                                     key: Data,
+                                     algorithm: MBSCipherAlgorithm,
+                                     error: UnsafeMutablePointer<NSError?>?) -> String? {
+        // Call the format-aware method with V0 format
+        return encryptString(string, key: key, algorithm: algorithm, format: .init(rawValue: 0)!, error: error)
+    }
+    
+    @objc
+    public static func decryptString(_ encryptedString: String,
+                                     key: Data,
+                                     algorithm: MBSCipherAlgorithm,
+                                     error: UnsafeMutablePointer<NSError?>?) -> String? {
+        // Call the format-aware method with V0 format
+        return decryptString(encryptedString, key: key, algorithm: algorithm, format: .init(rawValue: 0)!, error: error)
+    }
+    
+    // Legacy methods for backward compatibility
+    @objc
+    public static func encryptData(_ data: Data,
+                                   key: Data,
+                                   algorithm: MBSCipherAlgorithm,
+                                   error: UnsafeMutablePointer<NSError?>?) -> Data? {
+        return encryptData(data, key: key, algorithm: algorithm, format: .init(rawValue: 0)!, error: error)
+    }
+    
+    @objc
+    public static func decryptData(_ encryptedData: Data,
+                                   key: Data,
+                                   algorithm: MBSCipherAlgorithm,
+                                   error: UnsafeMutablePointer<NSError?>?) -> Data? {
+        return decryptData(encryptedData, key: key, algorithm: algorithm, format: .init(rawValue: 0)!, error: error)
     }
     
 }

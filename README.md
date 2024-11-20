@@ -83,13 +83,20 @@ do {
 NSError *error = nil;
 NSData *key = [MBSRandom generateBytes:32 error:&error];
 
-// Encrypt a string
+// Encrypt a string (default format V0)
 NSString *encrypted = [MBSCipher encryptString:@"Secret message" 
                                  withAlgorithm:MBSCipherAlgorithmAESGCM 
                                        withKey:key 
                                          error:&error];
 
-// Decrypt the string
+// Encrypt with explicit format
+NSString *encryptedV0 = [MBSCipher encryptString:@"Secret message"
+                                   withAlgorithm:MBSCipherAlgorithmAESGCM
+                                    withFormat:@(MBSCipherFormatV0)
+                                       withKey:key
+                                        error:&error];
+
+// Decrypt automatically handles the format
 NSString *decrypted = [MBSCipher decryptString:encrypted
                                  withAlgorithm:MBSCipherAlgorithmAESGCM
                                        withKey:key
@@ -100,18 +107,42 @@ NSString *decrypted = [MBSCipher decryptString:encrypted
 ```objectivec
 NSURL *sourceURL = [NSURL fileURLWithPath:@"source.txt"];
 NSURL *encryptedURL = [NSURL fileURLWithPath:@"encrypted.bin"];
+NSURL *decryptedURL = [NSURL fileURLWithPath:@"decrypted.txt"];
 
 NSError *error = nil;
 NSData *key = [MBSRandom generateBytes:32 error:&error];
 
+// Encrypt file (format V0: [12-byte nonce][ciphertext][16-byte tag])
 [MBSCipher encryptFile:sourceURL
               toOutput:encryptedURL
+         withAlgorithm:MBSCipherAlgorithmAESGCM
+               withKey:key
+                 error:&error];
+
+// Decrypt file
+[MBSCipher decryptFile:encryptedURL
+              toOutput:decryptedURL
          withAlgorithm:MBSCipherAlgorithmAESGCM
                withKey:key
                  error:&error];
 ```
 
 ## Changelog
+
+### [0.4.0] - 2024-11-18
+#### Added
+- Format versioning support via `MBSCipherFormat` enum
+- New API methods with explicit format parameters
+- Improved interoperability documentation
+- Format versioning documentation
+
+#### Changed
+- Enhanced error messages for format-related issues
+- Updated documentation with format specifications
+
+#### Compatibility
+- Fully backward compatible with 0.3.0
+- Default format (V0) matches existing implementation
 
 ### [0.3.0] - 2024-11-11
 #### Added

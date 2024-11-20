@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///       - Salt values
 ///       - Security-sensitive random data needs
 ///
-
+NS_SWIFT_NAME(Random)
 API_AVAILABLE(macos(12.4), ios(15.6))
 @interface MBSRandom : NSObject
 
