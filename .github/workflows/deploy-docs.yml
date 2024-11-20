@@ -30,7 +30,7 @@ jobs:
 
           $(xcrun --find docc) process-archive \
             transform-for-static-hosting build/Build/Products/Debug-iphonesimulator/MbSecureCrypto.doccarchive \
-            --hosting-base-path MbSecureCrypto \
+            --hosting-base-path MbSecureCrypto/docs \
             --output-path docs
 
       - name: Deploy to GitHub Pages
