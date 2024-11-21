@@ -58,6 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Format Specifications:
 /// - V0 (Default): [12-byte nonce][ciphertext][16-byte tag]
 ///
+/// - V1: Structure: [MAGIC(4)][VER(1)][ALG(1)][PARAMS_LEN(2)][PARAMS(var)][DATA][TAG]
 API_AVAILABLE(macos(12.4), ios(15.6))
 @interface MBSCipher : NSObject
 
@@ -68,7 +69,10 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///
 /// @param string The string to encrypt (must be valid UTF-8)
 /// @param algorithm Currently only supports MBSCipherAlgorithmAESGCM
-/// @param format Encryption format version to use
+/// @param format Encryption format version to use:
+///              - MBSCipherFormatV0: Legacy format [nonce][ciphertext][tag]
+///              - MBSCipherFormatV1: Universal format with algorithm parameters
+///              - nil: Defaults to V0 for backward compatibility
 /// @param key 32-byte key for AES-256-GCM
 /// @param error Error object populated on failure with codes:
 ///              - MBSCipherErrorInvalidKey (200): Invalid key size
@@ -77,10 +81,11 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///              - MBSCipherErrorFormatDetectionFailed (205): Failed to detect format version
 ///              - MBSCipherErrorFormatMismatch (206): Format version mismatch during decryption
 ///              - MBSCipherErrorEncryptionFailed (210): Encryption operation failed
-///              - MBSCipherErrorUnsupportedFormat (204): Format version not supported
 ///
 /// @return Base64-encoded string containing format-specific encrypted data, or nil on failure
 ///
+/// @note MBSCipherFormatV1 format provides enhanced algorithm flexibility and
+///       standardized parameter handling
 + (nullable NSString *)encryptString:(NSString *)string
                        withAlgorithm:(MBSCipherAlgorithm)algorithm
                           withFormat:(nullable NSNumber *)format
@@ -99,10 +104,8 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///              - MBSCipherErrorInvalidKey (200): Invalid key size
 ///              - MBSCipherErrorInvalidInput (202): Invalid input data
 ///              - MBSCipherErrorEncryptionFailed (210): Encryption operation failed
-///              - MBSCipherErrorUnsupportedFormat (204): Format version not supported
 ///
 /// @return Base64-encoded string containing format-specific encrypted data, or nil on failure
-///
 + (nullable NSString *)encryptString:(NSString *)string
                        withAlgorithm:(MBSCipherAlgorithm)algorithm
                              withKey:(NSData *)key
@@ -115,7 +118,10 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///
 /// @param encryptedString Base64-encoded string containing [nonce][ciphertext][tag]
 /// @param algorithm Must match the algorithm used for encryption
-/// @param format Encryption format version to use
+/// @param format Encryption format version to use:
+///              - MBSCipherFormatV0: Legacy format [nonce][ciphertext][tag]
+///              - MBSCipherFormatV1: Universal format with algorithm parameters
+///              - nil: Defaults to V0 for backward compatibility
 /// @param key Must be the same 32-byte key used for encryption
 /// @param error Error object populated on failure with codes:
 ///              - MBSCipherErrorInvalidKey (200): Invalid key size
@@ -130,6 +136,8 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///
 /// @note Decryption will fail if the data has been modified or if an incorrect key is used
 ///
+/// @note MBSCipherFormatV1 format provides enhanced algorithm flexibility and
+///       standardized parameter handling
 + (nullable NSString *)decryptString:(NSString *)encryptedString
                        withAlgorithm:(MBSCipherAlgorithm)algorithm
                           withFormat:(nullable NSNumber *)format
@@ -153,7 +161,7 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 /// @return The original decrypted string, or nil on failure
 ///
 /// @note Decryption will fail if the data has been modified or if an incorrect key is used
-///
+/// @note default to using format MBSCipherFormatV0
 + (nullable NSString *)decryptString:(NSString *)encryptedString
                        withAlgorithm:(MBSCipherAlgorithm)algorithm
                              withKey:(NSData *)key
@@ -166,7 +174,10 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///
 /// @param data The data to encrypt
 /// @param algorithm Currently only supports MBSCipherAlgorithmAESGCM
-/// @param format Encryption format version to use
+/// @param format Encryption format version to use:
+///              - MBSCipherFormatV0: Legacy format [nonce][ciphertext][tag]
+///              - MBSCipherFormatV1: Universal format with algorithm parameters
+///              - nil: Defaults to V0 for backward compatibility
 /// @param key 32-byte key for AES-256-GCM
 /// @param error Error object populated on failure with codes:
 ///              - MBSCipherErrorInvalidKey (200): Invalid key size
@@ -176,10 +187,10 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///              - MBSCipherErrorFormatMismatch (206): Format version mismatch during decryption
 ///              - MBSCipherErrorEncryptionFailed (210): Encryption operation failed
 ///
-/// @return NSData containing [nonce][ciphertext][tag], or nil on failure
+/// @return NSData or nil on failure
 ///
-/// @note Output size = input size + 28 bytes (12-byte nonce + 16-byte tag)
-///
+/// @note MBSCipherFormatV1 format provides enhanced algorithm flexibility and
+///       standardized parameter handling
 + (nullable NSData *)encryptData:(NSData *)data
                    withAlgorithm:(MBSCipherAlgorithm)algorithm
                       withFormat:(nullable NSNumber * )format
@@ -201,8 +212,7 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///
 /// @return NSData containing [nonce][ciphertext][tag], or nil on failure
 ///
-/// @note Output size = input size + 28 bytes (12-byte nonce + 16-byte tag)
-///
+/// @note default to using format MBSCipherFormatV0
 + (nullable NSData *)encryptData:(NSData *)data
                    withAlgorithm:(MBSCipherAlgorithm)algorithm
                          withKey:(NSData *)key
@@ -215,7 +225,10 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///
 /// @param encryptedData Data containing [nonce][ciphertext][tag]
 /// @param algorithm Must match the algorithm used for encryption
-/// @param format Encryption format version to use
+/// @param format Encryption format version to use:
+///              - MBSCipherFormatV0: Legacy format [nonce][ciphertext][tag]
+///              - MBSCipherFormatV1: Universal format with algorithm parameters
+///              - nil: Defaults to V0 for backward compatibility
 /// @param key Must be the same 32-byte key used for encryption
 /// @param error Error object populated on failure with codes:
 ///              - MBSCipherErrorInvalidKey (200): Invalid key size
@@ -228,6 +241,8 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///
 /// @return The original decrypted data, or nil on failure
 ///
+/// @note MBSCipherFormatV1 format provides enhanced algorithm flexibility and
+///       standardized parameter handling
 + (nullable NSData *)decryptData:(NSData *)encryptedData
                    withAlgorithm:(MBSCipherAlgorithm)algorithm
                       withFormat:(nullable NSNumber *)format
@@ -250,7 +265,7 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///              - MBSCipherErrorAuthenticationFailed (212): Tag verification failed
 ///
 /// @return The original decrypted data, or nil on failure
-///
+/// @note default to using format MBSCipherFormatV0
 + (nullable NSData *)decryptData:(NSData *)encryptedData
                    withAlgorithm:(MBSCipherAlgorithm)algorithm
                          withKey:(NSData *)key
@@ -265,7 +280,10 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 /// @param sourceURL File to encrypt (must be readable and ≤ 10MB)
 /// @param destinationURL Where to write the encrypted file
 /// @param algorithm Currently only supports MBSCipherAlgorithmAESGCM
-/// @param format Encryption format version to use
+/// @param format Encryption format version to use:
+///              - MBSCipherFormatV0: Legacy format [nonce][ciphertext][tag]
+///              - MBSCipherFormatV1: Universal format with algorithm parameters
+///              - nil: Defaults to V0 for backward compatibility
 /// @param key 32-byte key for AES-256-GCM
 /// @param error Error object populated on failure with codes:
 ///              - MBSCipherErrorInvalidKey (200): Invalid key size
@@ -279,8 +297,8 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///
 /// @return YES if successful, NO if an error occurred
 ///
-/// @note The encrypted file will be 28 bytes larger than the source file
-///
+/// @note MBSCipherFormatV1 format provides enhanced algorithm flexibility and
+///       standardized parameter handling
 + (BOOL)encryptFile:(NSURL *)sourceURL
            toOutput:(NSURL *)destinationURL
       withAlgorithm:(MBSCipherAlgorithm)algorithm
@@ -306,8 +324,7 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///
 /// @return YES if successful, NO if an error occurred
 ///
-/// @note The encrypted file will be 28 bytes larger than the source file
-///
+/// @note default to using format MBSCipherFormatV0
 + (BOOL)encryptFile:(NSURL *)sourceURL
            toOutput:(NSURL *)destinationURL
       withAlgorithm:(MBSCipherAlgorithm)algorithm
@@ -322,7 +339,10 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 /// @param sourceURL Encrypted file containing [nonce][ciphertext][tag]
 /// @param destinationURL Where to write the decrypted file
 /// @param algorithm Must match the algorithm used for encryption
-/// @param format Encryption format version to use
+/// @param format Encryption format version to use:
+///              - MBSCipherFormatV0: Legacy format [nonce][ciphertext][tag]
+///              - MBSCipherFormatV1: Universal format with algorithm parameters
+///              - nil: Defaults to V0 for backward compatibility
 /// @param key Must be the same 32-byte key used for encryption
 /// @param error Error object populated on failure with codes:
 ///              - MBSCipherErrorInvalidKey (200): Invalid key size
@@ -362,7 +382,7 @@ API_AVAILABLE(macos(12.4), ios(15.6))
 ///              - MBSCipherErrorAuthenticationFailed (212): Tag verification failed
 ///
 /// @return YES if successful, NO if an error occurred
-///
+/// @note default to using format MBSCipherFormatV0
 + (BOOL)decryptFile:(NSURL *)sourceURL
            toOutput:(NSURL *)destinationURL
       withAlgorithm:(MBSCipherAlgorithm)algorithm

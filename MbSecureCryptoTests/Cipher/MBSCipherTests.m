@@ -13,8 +13,6 @@
 
 @implementation MBSCipherTests
 
-// MBSCipherTests.m - Updated testEncryptString method
-
 - (void)testEncryptString {
     // Generate a test key
     NSError *error = nil;

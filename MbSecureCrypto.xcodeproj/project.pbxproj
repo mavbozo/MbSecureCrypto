@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		890E9AC22CE37D58004C665A /* MbSecureCrypto.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */; };
+		894072012CEDBEBF00C5882D /* MbSecureCrypto.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 894071FF2CEDBEBF00C5882D /* MbSecureCrypto.xcconfig */; };
 		897BB0B32CEB291500770682 /* MbSecureCrypto.docc in Sources */ = {isa = PBXBuildFile; fileRef = 897BB0B22CEB291500770682 /* MbSecureCrypto.docc */; };
 		897BB0B42CEB291500770682 /* MbSecureCrypto.docc in Sources */ = {isa = PBXBuildFile; fileRef = 897BB0B22CEB291500770682 /* MbSecureCrypto.docc */; };
 		89F5900C2CE30DBB0001AACE /* libMbSecureCrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 89F58F832CE307420001AACE /* libMbSecureCrypto.a */; };
@@ -40,12 +40,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = MbSecureCrypto.xcconfig; sourceTree = "<group>"; };
+		894071FF2CEDBEBF00C5882D /* MbSecureCrypto.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = MbSecureCrypto.xcconfig; sourceTree = "<group>"; };
 		897BB0B22CEB291500770682 /* MbSecureCrypto.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = MbSecureCrypto.docc; sourceTree = "<group>"; };
 		897BB0F92CEB83C400770682 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		897BB0FC2CEB841200770682 /* version-040-release-plan.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "version-040-release-plan.md"; sourceTree = "<group>"; };
 		897BB0FE2CEB841200770682 /* API.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = API.md; sourceTree = "<group>"; };
 		897BB1002CEB848600770682 /* FORMAT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FORMAT.md; sourceTree = "<group>"; };
+		89A78C292CEF802600CFD77C /* Deployment-Guide.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Deployment-Guide.md"; sourceTree = "<group>"; };
 		89F58F832CE307420001AACE /* libMbSecureCrypto.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMbSecureCrypto.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F590082CE30DBB0001AACE /* MbSecureCryptoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MbSecureCryptoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F590132CE30DEA0001AACE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -109,10 +109,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		894072002CEDBEBF00C5882D /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				894071FF2CEDBEBF00C5882D /* MbSecureCrypto.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		897BB0FD2CEB841200770682 /* internal */ = {
 			isa = PBXGroup;
 			children = (
-				897BB0FC2CEB841200770682 /* version-040-release-plan.md */,
+				89A78C292CEF802600CFD77C /* Deployment-Guide.md */,
 			);
 			path = internal;
 			sourceTree = "<group>";
@@ -130,6 +138,7 @@
 		89F58F7A2CE307420001AACE = {
 			isa = PBXGroup;
 			children = (
+				894072002CEDBEBF00C5882D /* Config */,
 				897BB0FF2CEB841200770682 /* docs */,
 				897BB0B22CEB291500770682 /* MbSecureCrypto.docc */,
 				89F590D72CE31F4D0001AACE /* MbSecureCrypto.xctestplan */,
@@ -137,7 +146,6 @@
 				89F590092CE30DBB0001AACE /* MbSecureCryptoTests */,
 				89F590122CE30DEA0001AACE /* Frameworks */,
 				89F58F842CE307420001AACE /* Products */,
-				890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */,
 				897BB0F92CEB83C400770682 /* README.md */,
 			);
 			sourceTree = "<group>";
@@ -259,7 +267,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89F590D82CE31F5A0001AACE /* MbSecureCrypto.xctestplan in Resources */,
-				890E9AC22CE37D58004C665A /* MbSecureCrypto.xcconfig in Resources */,
+				894072012CEDBEBF00C5882D /* MbSecureCrypto.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,7 +303,6 @@
 /* Begin XCBuildConfiguration section */
 		89F58F8B2CE307420001AACE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -358,7 +365,6 @@
 		};
 		89F58F8C2CE307420001AACE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -415,7 +421,6 @@
 		};
 		89F58F8E2CE307420001AACE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
@@ -450,7 +455,6 @@
 		};
 		89F58F8F2CE307420001AACE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
@@ -485,7 +489,6 @@
 		};
 		89F590102CE30DBB0001AACE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -514,7 +517,6 @@
 		};
 		89F590112CE30DBB0001AACE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 890E9AC12CE37D58004C665A /* MbSecureCrypto.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;

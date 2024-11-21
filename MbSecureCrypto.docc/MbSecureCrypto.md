@@ -1,67 +1,33 @@
 # ``MbSecureCrypto``
 
-A secure cryptography library for iOS and macOS.
+A secure cryptography library for iOS and macOS that provides cryptographically secure random number generation and encryption capabilities.
 
 ## Table of Contents
-- [Overview](#overview)
-- [AES-GCM](#aes-gcm)
-- [Format Specifications](#format-specifications)
+- [Features](#features)
+- [Requirements](#Requirements)
 - [Types & Algorithms](#types-and-algorithms)
+- <doc:CipherFormat>
 - [Error Handling](#error-handling)
 - [Usage Notes](#usage-notes)
 - [Best Practices](#best-practices)
-- [Version History](#version-history)
+- <doc:AESGCM>
+- <doc:VersionHistory>
 
-## Overview
+## Features
 
-MbSecureCrypto provides cryptographically secure random number generation and encryption capabilities.
+- 🔒 Cryptographically secure random number generation using Apple's Security framework
+- 🔐 AES-GCM encryption for strings, data, and files
+- 📦 Multiple output formats: raw bytes, hexadecimal, and base64
+- ⚡️ High-performance implementation using Apple's CryptoKit
+- 🛡️ Side-channel attack protection
+- ✅ Extensive test coverage
+- 📱 iOS and macOS support
 
-## AES-GCM
+## Requirements
 
-### AES-GCM Implementation Details
-
-#### Nonce and Tag Handling
-
-The `MBSCipher` class automatically handles nonces and authentication tags:
-
-- **Nonce Generation**: Each encryption operation generates a fresh 12-byte nonce using `MBSRandom`
-- **Data Format**: Encrypted output is structured as `[nonce][ciphertext][tag]`
-- **Sizing**:
-  - Nonce: 12 bytes
-  - Tag: 16 bytes
-  - Minimum total size: 28 bytes (even for empty input)
-  
-#### Format Details
-```objc
-// Encryption result structure
-typedef struct {
-    uint8_t nonce[12];     // Random nonce
-    uint8_t ciphertext[];  // Encrypted data (variable length)
-    uint8_t tag[16];       // Authentication tag
-} MBSEncryptedData;
-```
-
-The decryption functions automatically extract and validate these components, ensuring authenticated decryption.
-
-## Format Specifications
-
-Format V0 (Default)
-
-Used in versions 0.3.0 and earlier
-
-The V0 format is structured as follows:
-```
-[12-byte nonce][ciphertext][16-byte tag]
-```
-
-Key characteristics:
-- Nonce: 12 bytes, randomly generated
-- Tag: 16 bytes, GCM authentication tag
-- Total overhead: 28 bytes per encrypted output
-- Base64 encoded for string operations
-- Raw bytes for data/file operations
-- No explicit version or algorithm indicators
-
+- iOS 15.6+ / macOS 12.4+
+- Xcode 13+
+- Objective-C or Swift projects
 
 ## Types and Algorithms
 
@@ -77,9 +43,11 @@ typedef NS_ENUM(NSInteger, MBSCipherAlgorithm) {
 typedef NS_ENUM(uint8_t, MBSCipherFormat) {
     /// Format V0: [12B nonce][ciphertext][16B tag]
     MBSCipherFormatV0 = 0
+    /// Format V1: Universal Secure Block Format
+    /// Structure: [MAGIC(4)][VER(1)][ALG(1)][PARAMS_LEN(2)][PARAMS(var)][DATA][TAG]
+    MBSCipherFormatV1 = 1
 } API_AVAILABLE(macos(12.4), ios(15.6));
 ```
-
 
 ## Error Handling
 
@@ -147,35 +115,6 @@ typedef NS_ERROR_ENUM(MBSErrorDomain, MBSCipherError) {
    - Use atomic file operations
    - Clean up temporary files
 
-## Version History
-
-### Version 0.4.0
-#### Added
-- Format versioning support via `MBSCipherFormat` enum
-- New API methods with explicit format parameters
-- Improved interoperability documentation
-- Format versioning documentation
-
-#### Changed
-- Enhanced error messages for format-related issues
-- Updated documentation with format specifications
-
-#### Compatibility
-- Fully backward compatible with 0.3.0
-- Default format (V0) matches existing implementation
-
-### Version 0.3.0
-- Added encryption capabilities
-- Added MBSRandom class
-- Added comprehensive error handling
-- Deprecated MBSCryptoOperation
-
-### Version 0.2.0
-- Added random bytes generation methods
-- Added hex and base64 encoding options
-
-### Version 0.1.0
-- Initial release
 
 ## Topics
 
