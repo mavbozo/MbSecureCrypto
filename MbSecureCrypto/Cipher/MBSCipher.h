@@ -56,6 +56,38 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// ```
 ///
+/// Example usage with recommended V1 format:
+/// ```objc
+/// // Generate a random 32-byte key
+/// NSError *error = nil;
+/// NSData *key = [MBSRandom generateBytes:32 error:&error];
+///
+/// // Encrypt string using V1 format (recommended)
+/// NSString *encrypted = [MBSCipher encryptString:@"Secret message"
+///                                  withAlgorithm:MBSCipherAlgorithmAESGCM
+///                                    withFormat:@(MBSCipherFormatV1)
+///                                       withKey:key
+///                                         error:&error];
+///
+/// // Decrypt string with V1 format
+/// NSString *decrypted = [MBSCipher decryptString:encrypted
+///                                  withAlgorithm:MBSCipherAlgorithmAESGCM
+///                                    withFormat:@(MBSCipherFormatV1)
+///                                       withKey:key
+///                                         error:&error];
+///
+/// // File encryption with V1 format
+/// NSURL *sourceURL = [NSURL fileURLWithPath:@"document.pdf"];
+/// NSURL *encryptedURL = [NSURL fileURLWithPath:@"document.encrypted"];
+///
+/// BOOL success = [MBSCipher encryptFile:sourceURL
+///                             toOutput:encryptedURL
+///                        withAlgorithm:MBSCipherAlgorithmAESGCM
+///                           withFormat:@(MBSCipherFormatV1)
+///                              withKey:key
+///                                error:&error];
+/// ```
+///
 /// Format Specifications:
 /// - V0 (Default): [12-byte nonce][ciphertext][16-byte tag]
 ///

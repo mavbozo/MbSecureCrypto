@@ -44,7 +44,7 @@ For detailed documentation, please see our [MBSecureCrypto Docs](https://mavbozo
 
 Select **Objective-C** on the top right of the page to view the ObjectiveC code docs.
 
-## Quick Start
+## Usage
 
 ### Random Number Generation
 
@@ -81,9 +81,98 @@ do {
 }
 ```
 
-### Encryption
+### Encryption & Decryption
 
-#### String Encryption
+MbSecureCrypto provides secure encryption using AES-GCM with two format options. We recommend using Format V1 which provides enhanced algorithm flexibility and standardized parameter handling.
+
+#### String Encryption (Recommended Approach)
+
+use `MBSCipherFormatV1` as the format.
+
+```objectivec
+#import <MbSecureCrypto/MbSecureCrypto.h>
+
+// Generate a random 32-byte key
+NSError *error = nil;
+NSData *key = [MBSRandom generateBytes:32 error:&error];
+
+// Encrypt using Format V1 (Recommended)
+NSString *encrypted = [MBSCipher encryptString:@"Secret message" 
+                                 withAlgorithm:MBSCipherAlgorithmAESGCM 
+                                   withFormat:@(MBSCipherFormatV1)
+                                      withKey:key 
+                                        error:&error];
+
+if (error) {
+    NSLog(@"Encryption failed: %@", error.localizedDescription);
+    return;
+}
+
+// Decrypt with Format V1
+NSString *decrypted = [MBSCipher decryptString:encrypted
+                                 withAlgorithm:MBSCipherAlgorithmAESGCM
+                                   withFormat:@(MBSCipherFormatV1)
+                                      withKey:key
+                                        error:&error];
+```
+
+#### File Encryption (recommended approach)
+
+use `MBSCipherFormatV1` as the format.
+
+```objectivec
+// File paths
+NSURL *sourceURL = [NSURL fileURLWithPath:@"document.pdf"];
+NSURL *encryptedURL = [NSURL fileURLWithPath:@"document.encrypted"];
+NSURL *decryptedURL = [NSURL fileURLWithPath:@"document.decrypted.pdf"];
+
+// Encrypt file using Format V1
+BOOL success = [MBSCipher encryptFile:sourceURL
+                            toOutput:encryptedURL
+                       withAlgorithm:MBSCipherAlgorithmAESGCM
+                          withFormat:@(MBSCipherFormatV1)
+                             withKey:key
+                               error:&error];
+
+if (!success) {
+    NSLog(@"File encryption failed: %@", error.localizedDescription);
+    return;
+}
+
+// Decrypt file
+success = [MBSCipher decryptFile:encryptedURL
+                       toOutput:decryptedURL
+                  withAlgorithm:MBSCipherAlgorithmAESGCM
+                     withFormat:@(MBSCipherFormatV1)
+                        withKey:key
+                          error:&error];
+```
+
+#### Binary Data Encryption (recommended approach)
+
+use `MBSCipherFormatV1` as the format.
+
+```objectivec
+// Encrypt raw data
+NSData *sensitiveData = [@"Sensitive information" dataUsingEncoding:NSUTF8StringEncoding];
+NSData *encryptedData = [MBSCipher encryptData:sensitiveData
+                                 withAlgorithm:MBSCipherAlgorithmAESGCM
+                                    withFormat:@(MBSCipherFormatV1)
+                                       withKey:key
+                                         error:&error];
+
+// Decrypt data
+NSData *decryptedData = [MBSCipher decryptData:encryptedData
+                                 withAlgorithm:MBSCipherAlgorithmAESGCM
+                                    withFormat:@(MBSCipherFormatV1)
+                                       withKey:key
+                                         error:&error];
+```
+
+#### String Encryption (old format)
+
+if `withFormat` not provided then `MBSCipherFormatV0` is the format as default.
+
 ```objectivec
 // Generate a random 32-byte key
 NSError *error = nil;
@@ -109,29 +198,16 @@ NSString *decrypted = [MBSCipher decryptString:encrypted
                                          error:&error];
 ```
 
-#### File Encryption
-```objectivec
-NSURL *sourceURL = [NSURL fileURLWithPath:@"source.txt"];
-NSURL *encryptedURL = [NSURL fileURLWithPath:@"encrypted.bin"];
-NSURL *decryptedURL = [NSURL fileURLWithPath:@"decrypted.txt"];
+### Format V1 Benefits
+The new Format V1 provides several advantages:
+- Future-proof design supporting multiple algorithms
+- Standardized parameter handling
+- Magic bytes for format verification
+- Explicit version checking
+- Enhanced error detection
+- Improved interoperability
 
-NSError *error = nil;
-NSData *key = [MBSRandom generateBytes:32 error:&error];
-
-// Encrypt file (format V0: [12-byte nonce][ciphertext][16-byte tag])
-[MBSCipher encryptFile:sourceURL
-              toOutput:encryptedURL
-         withAlgorithm:MBSCipherAlgorithmAESGCM
-               withKey:key
-                 error:&error];
-
-// Decrypt file
-[MBSCipher decryptFile:encryptedURL
-              toOutput:decryptedURL
-         withAlgorithm:MBSCipherAlgorithmAESGCM
-               withKey:key
-                 error:&error];
-```
+We strongly recommend using Format V1 for all new implementations.
 
 ## Contributing
 

@@ -28,6 +28,7 @@
 
 
 ## Version 0.4.0
+
 ### Added
 - Format versioning support via `MBSCipherFormat` enum
 - New API methods with explicit format parameters
