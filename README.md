@@ -40,7 +40,7 @@ dependencies: [
 
 ## Documentation Website
 
-For detailed documentation, please see our [MBSecureCrypto Docs](https://mavbozo.github.io/MbSecureCrypto).
+For detailed documentation, please see our [MBSecureCrypto Docs](https://mavbozo.github.io/MbSecureCrypto/documentation/mbsecurecrypto?language=objc).
 
 Select **Objective-C** on the top right of the page to view the ObjectiveC code docs.
 
@@ -140,6 +140,10 @@ NSData *key = [MBSRandom generateBytes:32 error:&error];
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## Version History
+
+see [Version History](https://mavbozo.github.io/MbSecureCrypto/documentation/mbsecurecrypto/versionhistory?language=objc) on the documentation website.
 
 ## License
 

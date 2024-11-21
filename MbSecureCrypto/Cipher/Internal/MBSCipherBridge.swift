@@ -7,6 +7,10 @@
 import Foundation
 import CryptoKit
 
+/// Internal use only
+///
+/// This is a swift bridge that uses CryptoKit for cipher operations
+///
 @objcMembers
 public class MBSCipherBridge: NSObject {
     

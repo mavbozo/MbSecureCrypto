@@ -19,9 +19,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// and integrity of the encrypted data. The implementation handles nonce generation and
 /// authentication tag management automatically.
 ///
-/// Example usage with explicit format:
+///
 /// ```objc
-/// // Generate a random 32-byte key
+///
+/// // Generate a random 32-byte key with explicit format
 /// NSError *error = nil;
 /// NSData *key = [MBSRandom generateBytes:32 error:&error];
 ///

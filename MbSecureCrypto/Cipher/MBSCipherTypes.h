@@ -11,7 +11,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Supported Cipher Algorithms
 typedef NS_ENUM(NSInteger, MBSCipherAlgorithm) {
+    /// AES-GCM
     MBSCipherAlgorithmAESGCM = 0
 } API_AVAILABLE(macos(12.4), ios(15.6));
 
