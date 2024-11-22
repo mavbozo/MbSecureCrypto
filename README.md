@@ -169,7 +169,7 @@ NSData *decryptedData = [MBSCipher decryptData:encryptedData
                                          error:&error];
 ```
 
-#### String Encryption (old format)
+#### Encryption / Decryption with V0 Format
 
 if `withFormat` not provided then `MBSCipherFormatV0` is the format as default.
 
@@ -191,7 +191,7 @@ NSString *encryptedV0 = [MBSCipher encryptString:@"Secret message"
                                        withKey:key
                                         error:&error];
 
-// Decrypt automatically handles the format
+// Decrypt automatically handles the format using V0
 NSString *decrypted = [MBSCipher decryptString:encrypted
                                  withAlgorithm:MBSCipherAlgorithmAESGCM
                                        withKey:key
