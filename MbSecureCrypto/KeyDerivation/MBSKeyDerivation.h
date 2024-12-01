@@ -125,16 +125,14 @@ typedef NS_ENUM(NSInteger, MBSHkdfAlgorithm) {
 /// Derives a new key using default parameters (SHA-256, 32 bytes).
 ///
 /// Convenience method that uses SHA-256 and generates a 32-byte key.
-/// Equivalent to calling the full method with:
-/// - algorithm: ``MBSHkdfAlgorithmSHA256``
-/// - keySize: 32
-///
-/// Example of basic usage:
+/// Equivalent to calling:
 /// ```objc
-/// NSData *key = [MBSKeyDerivation deriveKey:masterKey
-///                                    domain:@"encryption"
-///                                   context:@"user-data"
-///                                    error:&error];
+/// [MBSKeyDerivation deriveKey:masterKey
+///                      domain:domain
+///                     context:context
+///                     keySize:32
+///                  algorithm:MBSHkdfAlgorithmSHA256
+///                      error:error];
 /// ```
 ///
 /// - Parameters:

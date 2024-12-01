@@ -13,6 +13,9 @@
 @implementation MBSKeyDerivation
 
 // MARK: - HKDF Internal Functions
+// Suppress deprecated warnings for internal usage
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 /**
  * Returns the digest length for a given algorithm.

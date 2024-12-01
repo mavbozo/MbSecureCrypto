@@ -57,7 +57,8 @@ Pod::Spec.new do |spec|
   spec.public_header_files = [
     "MbSecureCrypto/*.h",
     "MbSecureCrypto/Random/*.h",
-    "MbSecureCrypto/Cipher/*.h"
+    "MbSecureCrypto/Cipher/*.h",
+    "MbSecureCrypto/KeyDerivation/*.h"
   ]
   
   # Module configuration
