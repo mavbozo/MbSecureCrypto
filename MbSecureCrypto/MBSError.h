@@ -39,6 +39,7 @@ typedef NS_ERROR_ENUM(MBSErrorDomain, MBSCipherError) {
     MBSCipherErrorEncryptionFailed = 210,     // Encryption operation failed
     MBSCipherErrorDecryptionFailed = 211,     // Decryption operation failed
     MBSCipherErrorAuthenticationFailed = 212, // Authentication tag verification failed
+    MBSCipherErrorKeyDerivationFailed = 213, // Key derivation operation failed
     
     // File operation errors
     MBSCipherErrorIOFailure = 220,           // File read/write operation failed

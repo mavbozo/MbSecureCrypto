@@ -28,4 +28,6 @@ FOUNDATION_EXPORT const unsigned char MbSecureCryptoVersionString[];
 #import "MBSCipherTypes.h"
 #import "MBSCipher.h"
 
+#import "MBSKeyDerivation.h"
+
 #import "MBSError.h"

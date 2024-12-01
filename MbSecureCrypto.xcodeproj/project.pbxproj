@@ -63,6 +63,7 @@
 			publicHeaders = (
 				Cipher/MBSCipher.h,
 				Cipher/MBSCipherTypes.h,
+				KeyDerivation/MBSKeyDerivation.h,
 				MbSecureCrypto.h,
 				MBSError.h,
 				Random/MBSRandom.h,

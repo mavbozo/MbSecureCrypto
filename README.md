@@ -25,7 +25,7 @@ A secure cryptography library for iOS and macOS that provides cryptographically 
 Add the following line to your Podfile:
 
 ```ruby
-pod 'MbSecureCrypto', '~> 0.5.0'
+pod 'MbSecureCrypto', '~> 0.6.0'
 ```
 
 ### Swift Package Manager
@@ -34,7 +34,7 @@ Add the following dependency to your Package.swift:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/mavbozo/MbSecureCrypto.git", from: "0.5.0")
+    .package(url: "https://github.com/mavbozo/MbSecureCrypto.git", from: "0.6.0")
 ]
 ```
 
@@ -208,6 +208,99 @@ The new Format V1 provides several advantages:
 - Improved interoperability
 
 We strongly recommend using Format V1 for all new implementations.
+
+
+### Key Derivation
+
+MbSecureCrypto provides secure key derivation using HKDF (HMAC-based Key Derivation Function) with domain separation and multiple hash algorithm support.
+
+#### Basic Key Derivation
+
+```objectivec
+#import <MbSecureCrypto/MbSecureCrypto.h>
+
+// Generate a master key
+NSError *error = nil;
+NSData *masterKey = [MBSRandom generateBytes:32 error:&error];
+
+// Derive a key using default parameters (SHA-256, 32 bytes)
+NSData *derivedKey = [MBSKeyDerivation deriveKey:masterKey
+                                         domain:@"myapp.encryption"
+                                        context:@"user-data"
+                                         error:&error];
+
+if (error) {
+    NSLog(@"Key derivation failed: %@", error.localizedDescription);
+    return;
+}
+```
+
+#### Advanced Key Derivation
+
+```objectivec
+// Derive a key with custom parameters
+NSData *derivedKey = [MBSKeyDerivation deriveKey:masterKey
+                                         domain:@"myapp.encryption"
+                                        context:@"backup-key"
+                                        keySize:64  // 512-bit key
+                                     algorithm:MBSHkdfAlgorithmSHA512
+                                         error:&error];
+```
+
+#### Domain Separation Examples
+
+```objectivec
+// Different keys for different purposes
+NSData *encryptionKey = [MBSKeyDerivation deriveKey:masterKey
+                                            domain:@"myapp.encryption"
+                                           context:@"user-data"
+                                            error:&error];
+
+NSData *signingKey = [MBSKeyDerivation deriveKey:masterKey
+                                         domain:@"myapp.signing"
+                                        context:@"user-data"
+                                         error:&error];
+
+// Different keys for different data types
+NSData *documentsKey = [MBSKeyDerivation deriveKey:masterKey
+                                           domain:@"myapp.encryption"
+                                          context:@"documents"
+                                           error:&error];
+
+NSData *messagesKey = [MBSKeyDerivation deriveKey:masterKey
+                                          domain:@"myapp.encryption"
+                                         context:@"messages"
+                                          error:&error];
+```
+
+#### Swift Usage
+
+```swift
+import MbSecureCrypto
+
+do {
+    // Generate a master key
+    let masterKey = try MBSRandom.generateBytes(32)
+    
+    // Derive a key using default parameters
+    let derivedKey = try MBSKeyDerivation.deriveKey(
+        masterKey,
+        domain: "myapp.encryption",
+        context: "user-data"
+    )
+    
+    // Derive a key with custom parameters
+    let customKey = try MBSKeyDerivation.deriveKey(
+        masterKey,
+        domain: "myapp.encryption",
+        context: "backup-key",
+        keySize: 64,
+        algorithm: .SHA512
+    )
+} catch {
+    print("Key derivation failed: \(error)")
+}
+```
 
 ## Contributing
 

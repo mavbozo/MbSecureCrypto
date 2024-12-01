@@ -122,6 +122,7 @@ typedef NS_ERROR_ENUM(MBSErrorDomain, MBSCipherError) {
 
 - ``MBSRandom``
 - ``MBSCipher``
+- ``MBSKeyDerivation``
 
 ### Error Handling
 
